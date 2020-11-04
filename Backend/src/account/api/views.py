@@ -20,12 +20,14 @@ def registration_view(request):
         if validate_email(email) != None:
             data['error_message'] = 'That email is already in use.'
             data['response'] = 'Error'
+            data['error'] = True
             return Response(data)
 
         username = request.data.get('username', '0')
         if validate_username(username) != None:
             data['error_message'] = 'That username is already in use.'
             data['response'] = 'Error'
+            data['error'] = True
             return Response(data)
 
         serializer = RegistrationSerializer(data=request.data)
@@ -86,5 +88,6 @@ class ObtainAuthTokenView(APIView):
         else:
             context['response'] = 'Error'
             context['error_message'] = 'Invalid credentials'
+            context['error'] = True
 
         return Response(context)
