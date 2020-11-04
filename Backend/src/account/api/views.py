@@ -1,3 +1,4 @@
+import json
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
@@ -72,9 +73,9 @@ class ObtainAuthTokenView(APIView):
 
     def post(self, request):
         context = {}
-
-        email = request.POST.get('username')
-        password = request.POST.get('password')
+        data = json.loads(request.body)
+        email = data.get('username', '0')
+        password = data.get('password', 0)
         account = authenticate(email=email, password=password)
         if account:
             try:
@@ -84,6 +85,7 @@ class ObtainAuthTokenView(APIView):
             context['response'] = 'Successfully authenticated.'
             context['pk'] = account.pk
             context['email'] = email.lower()
+            context['username'] = account.username
             context['token'] = token.key
         else:
             context['response'] = 'Error'
